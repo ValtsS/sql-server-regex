@@ -22,7 +22,7 @@ namespace tests
         [Test]
         public void Should_GroupMatch()
         {
-            var data = UDF.GroupMatch("123", "(?<heh>1)", "heh" );
+            var data = UDF.GroupMatch("123", "(?<heh>1)", "heh");
             Assert.IsNotNull(data);
             Assert.AreEqual("1", data.Value);
         }
@@ -43,7 +43,7 @@ namespace tests
             var enumdata = data as IEnumerable<UDF.RegexMatch>;
             Assert.IsNotNull(enumdata);
             Assert.AreEqual(3, enumdata.Count());
-            foreach( var entry in enumdata )
+            foreach (var entry in enumdata)
             {
                 Assert.AreEqual("1", entry.MatchText.Value);
             }
