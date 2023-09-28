@@ -4,6 +4,7 @@ using Microsoft.SqlServer.Server;
 using System.Text.RegularExpressions;
 using System.Collections;
 using System.Collections.Generic;
+using dev;
 
 public partial class UDF
 {
@@ -16,7 +17,7 @@ public partial class UDF
         }
         else
         {
-            Match m = Regex.Match(input, pattern);
+            Match m = RegexCache.Get(pattern).Match(pattern);
 
             return new SqlString(m.Success ? m.Value : null);
         }
@@ -30,9 +31,8 @@ public partial class UDF
             return new SqlString(null);
         }
         else
-        { 
-            Group g = Regex.Match(input, pattern).Groups[group];
-
+        {
+            Group g = RegexCache.Get(pattern).Match(input).Groups[group];
             return new SqlString(g.Success ? g.Value : null);
         }
     }
@@ -47,7 +47,7 @@ public partial class UDF
         }
         else
         {
-            return new SqlString(Regex.Replace(input, pattern, replacement));
+            return new SqlString(RegexCache.Get(pattern).Replace(input, replacement));
         }
     }
 
@@ -58,7 +58,7 @@ public partial class UDF
         if (!String.IsNullOrEmpty(input) && !String.IsNullOrEmpty(pattern))
         {
             //only run through the matches if the inputs have non-empty, non-null strings
-            foreach (Match m in Regex.Matches(input, pattern))
+            foreach (Match m in RegexCache.Get(pattern).Matches(input))
             {
                 MatchCollection.Add(new RegexMatch(m.Index, m.Value));
             }
@@ -90,7 +90,7 @@ public partial class UDF
         MatchText = rm.MatchText;
     }
 
-    private class RegexMatch
+    sealed public class RegexMatch
     {
         public SqlInt32 Position { get; set; }
         public SqlString MatchText { get; set; }
